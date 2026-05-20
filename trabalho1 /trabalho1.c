@@ -57,6 +57,41 @@ int ehBissexto(int ano)
 
     return 0;
 }
+char NormalizarCharUTF8(char texto[], int *i){
+
+    if(texto[*i] == -61){
+
+        (*i)++;
+
+        int prox = texto[*i];
+
+        // á à â ã ä å
+        if(prox >= -96 && prox <= -91)
+            return 'a';
+
+        // é è ê ë
+        if(prox >= -88 && prox <= -85)
+            return 'e';
+
+        // í ì î ï
+        if(prox >= -84 && prox <= -81)
+            return 'i';
+
+        // ó ò ô õ ö
+        if(prox >= -78 && prox <= -74)
+            return 'o';
+
+        // ú ù û ü
+        if(prox >= -71 && prox <= -68)
+            return 'u';
+
+        // ç
+        if(prox == -89)
+            return 'c';
+    }
+
+    return texto[*i];
+}
 
 int diasNoMes(int mes, int ano)
 {
@@ -197,35 +232,31 @@ Q3
 ====================================================
 */
 
-int q3(char *texto, char c, int isCaseSensitive)
-{
+int q3(char texto[], char c, int isCaseSensitive){
+
     int qtdOcorrencias = 0;
-    int i;
 
-    for (i = 0; texto[i] != '\0'; i++)
-    {
-        if ((int)texto[i] == -61)
-        {
-            continue;
+    // lowercase no caractere buscado
+    if(!isCaseSensitive){
+
+        if(c >= 'A' && c <= 'Z'){
+            c += 32;
         }
+    }
 
-        char atual = texto[i];
+    for(int i = 0; texto[i]; i++){
 
-        if (isCaseSensitive != 1)
-        {
-            if (atual >= 'A' && atual <= 'Z')
-            {
+        char atual = NormalizarCharUTF8(texto, &i);
+
+        // lowercase no texto
+        if(!isCaseSensitive){
+
+            if(atual >= 'A' && atual <= 'Z'){
                 atual += 32;
             }
-
-            if (c >= 'A' && c <= 'Z')
-            {
-                c += 32;
-            }
         }
 
-        if (atual == c)
-        {
+        if(atual == c){
             qtdOcorrencias++;
         }
     }
